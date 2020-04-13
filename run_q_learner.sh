@@ -25,11 +25,11 @@ python basic_rl.py -al=0.9
 
 # Experiment 5
 echo 'Experiment 5'
-python basic_rl.py -al=0.9 -ga=0.99 -ep=0.1 -ed=0.99
-python basic_rl.py -al=0.9 -ga=0.99 -ep=0.1 -ed=0.999
-python basic_rl.py -al=0.9 -ga=0.99 -ep=0.99 -ed=0.99
-python basic_rl.py -al=0.9 -ga=0.99 -ep=0.99 -ed=0.999
-python basic_rl.py -al=0.1 -ga=0.99 -ep=0.1 -ed=0.99
-python basic_rl.py -al=0.1 -ga=0.99 -ep=0.1 -ed=0.999
-python basic_rl.py -al=0.1 -ga=0.99 -ep=0.99 -ed=0.99
-python basic_rl.py -al=0.1 -ga=0.99 -ep=0.99 -ed=0.999
+python basic_rl.py -al=0.9 -ga=0.995 -ep=0.1 -ed=0.99
+python basic_rl.py -al=0.9 -ga=0.995 -ep=0.1 -ed=0.999
+python basic_rl.py -al=0.9 -ga=0.995 -ep=0.99 -ed=0.99
+python basic_rl.py -al=0.9 -ga=0.995 -ep=0.99 -ed=0.999
+python basic_rl.py -al=0.1 -ga=0.995 -ep=0.1 -ed=0.99
+python basic_rl.py -al=0.1 -ga=0.995 -ep=0.1 -ed=0.999
+python basic_rl.py -al=0.1 -ga=0.995 -ep=0.99 -ed=0.99
+python basic_rl.py -al=0.1 -ga=0.995 -ep=0.99 -ed=0.999

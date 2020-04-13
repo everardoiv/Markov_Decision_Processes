@@ -287,8 +287,6 @@ def run_forest():
 
     # Iteration v Reward
 
-
-
 if __name__ == "__main__":
     mdp_example()
     print()

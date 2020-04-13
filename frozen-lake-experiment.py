@@ -77,20 +77,18 @@ def mdp_example():
 
 @timing
 def run_gridworld(env_name, mapping, shape=None, new_lake=None):
-    np.random.seed(0)
+    np.random.seed(42)
     min_r = -100.0
-    max_r = 100.0
-    problem = MyWrapper.TransformReward(gym.make(env_name, desc=new_lake), lambda r: np.clip(r*100.0, min_r, max_r))
-    # problem = FrozenLakeEnv(desc=new_lake)
-    problem.seed(0)
-    problem.reset()
+    max_r = 101.0
+    env = MyWrapper.TransformReward(gym.make(env_name, desc=new_lake), lambda r: np.clip(r*100.0, min_r, max_r))
+    env.reset()
     print("== %s ==" % env_name)
-    print("Actions: " + str(problem.env.action_space.n))
-    print("States: " + str(problem.env.observation_space.n))
-    print(np.asarray(problem.env.desc, dtype="U"))
+    print("Actions: " + str(env.env.action_space.n))
+    print("States: " + str(env.env.observation_space.n))
+    print(np.asarray(env.env.desc, dtype="U"))
     print()
 
-    P, R = evaluate_rewards_and_transitions(problem, False)
+    P, R = evaluate_rewards_and_transitions(env, False)
 
     gamma_range = np.append(np.linspace(0.1, 0.9, 9), np.linspace(0.91, 0.99, 9))
 
@@ -126,8 +124,8 @@ def frozen_lake_all(P, R, gamma_range, mapping, shape):
     for i, gamma in enumerate(gamma_range):
         print('Gamma %0.2f' % gamma)
 
-        vi = mdp.ValueIteration(transitions=P, reward=R, gamma=gamma, epsilon=0.0001, max_iter=10000)
-        vi.setVerbose()
+        vi = mdp.ValueIteration(transitions=P, reward=R, gamma=gamma, epsilon=0.0001, max_iter=5000)
+        # vi.setVerbose()
         vi.run()
 
         vi_iteration_list[i] = vi.run_stats[-1:][0]['Iteration']
@@ -135,8 +133,8 @@ def frozen_lake_all(P, R, gamma_range, mapping, shape):
         vi_reward_list[i] = vi.run_stats[-1:][0]['Reward']
         vi_error_list[i] = vi.run_stats[-1:][0]['Error']
 
-        pi = mdp.PolicyIteration(transitions=P, reward=R, gamma=gamma, max_iter=10000, eval_type=1)
-        pi.setVerbose()
+        pi = mdp.PolicyIteration(transitions=P, reward=R, gamma=gamma, max_iter=5000, eval_type=1)
+        # pi.setVerbose()
         pi.run()
 
         pi_iteration_list[i] = pi.run_stats[-1:][0]['Iteration']
@@ -260,8 +258,8 @@ def frozen_lake_all(P, R, gamma_range, mapping, shape):
         plt.savefig('plots/frozen_lakes/gamma_v_differences.png')
 
     # TODO
-    gamma_range = np.array([0.1, 0.5, 0.9, 0.99])
-    alpha_range = np.array([0.01, 0.5, 0.99])
+    gamma_range = np.array([0.8, 0.9, 0.99])
+    alpha_range = np.array([0.1, 0.9, 0.99])
     epsilon_range = np.array([0.1, 0.5, 0.9, 0.999])
     e_decay_range = np.array([0.1, 0.5, 0.9, 0.999])
 
@@ -281,7 +279,7 @@ def frozen_lake_all(P, R, gamma_range, mapping, shape):
                                        alpha_min=0.001,
                                        epsilon=ep, epsilon_min=0.1, epsilon_decay=ed, n_iter=10e4)
                     stats = ql.run()
-                    plot_stats(stats, ('ql_forest_%0.2f_%0.2f_%0.2f_%0.2f' % (gamma, alpha, ep, ed)))
+                    plot_stats(stats, ('ql_frozen_lake_%0.2f_%0.2f_%0.2f_%0.2f' % (gamma, alpha, ep, ed)))
 
                     # print('Policy: ')
                     # print(ql.policy)
@@ -302,7 +300,7 @@ def frozen_lake_all(P, R, gamma_range, mapping, shape):
                         print(variation)
                         print('Mean Reward for Last 100 Iterations:')
                         print(windowed_reward)
-                        if np.all(res < thresh) or variation < thresh or windowed_reward > 85.0:
+                        if np.all(res < thresh) or variation < thresh or windowed_reward > 45.0:
                             print('Breaking! Below Thresh')
                             print('Found at: gamma - {}, alpha - {}, epsilon - {}, e_decay - {}'.format(
                                 gamma, alpha, ep, ed))
@@ -595,6 +593,11 @@ def evaluate_rewards_and_transitions(problem, mutate=False):
         for action in range(num_actions):
             for transition in problem.env.P[state][action]:
                 probability, next_state, reward, done = transition
+                if reward != 0.0:
+                    reward *= 100.0
+                else:
+                    reward -= 0.01
+                print(reward)
                 P[action, state, next_state] = probability
                 R[action, state, next_state] = reward
 
@@ -1106,16 +1109,16 @@ if __name__ == "__main__":
     # print()
 
     # Frozen Lake Small
-    mapping = {0: "L", 1: "D", 2: "R", 3: "U"}
-    shape = (4, 4)
-    run_gridworld("FrozenLake-v0", mapping, shape)
+    # mapping = {0: "L", 1: "D", 2: "R", 3: "U"}
+    # shape = (4, 4)
+    # run_gridworld("FrozenLake-v0", mapping, shape)
 
     # Frozen Lake Large
     n = 16
     shape = (n, n)
     mapping = {0: "L", 1: "D", 2: "R", 3: "U"}
     np.random.seed(0)
-    new_frozenlake = generate_random_map(n, 0.9609375)
+    new_frozenlake = generate_random_map(n, 0.98046875)
     run_gridworld("FrozenLake-v0", mapping, shape, new_frozenlake)
 
     frozen_vi_experiment("FrozenLake-v0", new_frozenlake)

@@ -4,7 +4,7 @@ import argparse
 # Experiment 1: Change Epsilon from 0.1, 0.5, 0.99
 # Experiment 2: Change Epsilon Decay from 0.5 to 0.9 to 0.999
 # Experiment 3: Change Gamma from 0.1 to 0.5 to 0.9 to 0.99
-# Experiment 4: Change alpha fomr 0.1 to 0.5 to 0.9
+# Experiment 4: Change alpha from 0.1 to 0.5 to 0.9
 
 parser = argparse.ArgumentParser(
     description="Use SARSA/Q-learning algorithm with epsilon-greedy/softmax polciy."
@@ -117,10 +117,10 @@ def main():
     np.random.RandomState(42)
 
     # Selection of the problem
-    n = 4
+    n = 16
     shape = (n, n)
     mapping = {0: "L", 1: "D", 2: "R", 3: "U"}
-    new_frozenlake = generate_random_map(n, 0.9609375)
+    new_frozenlake = generate_random_map(n, 0.98046875)
     min_r = -100.0
     max_r = 100.0
     env = MyWrapper.TransformReward(gym.make(env_type, desc=new_frozenlake), lambda r: np.clip(r*100.0, min_r, max_r))

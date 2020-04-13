@@ -31,3 +31,9 @@ The file structure used was the following:
 -- frozen_lakes
 
 In order to run the code you must change directories to the parent folder and run (example):
+ - VI and PI the following:
+  python frozen-lake-experiment.py
+  python forest_experiment.py
+
+ - Q Learning for Frozen Lake:
+ ./run_q_learner.sh
